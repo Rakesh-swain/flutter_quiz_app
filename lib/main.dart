@@ -45,22 +45,25 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text("Quiz App"),
       ),
-      body: FutureBuilder(
-          future: fetchQuestions(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return const Text("Press button to start");
-              case ConnectionState.waiting:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              case ConnectionState.active:
-              case ConnectionState.done:
-                if (snapshot.hasError) return Container();
-                return questionList();
-            }
-          }),
+      body: RefreshIndicator(
+        onRefresh: fetchQuestions,
+        child: FutureBuilder(
+            future: fetchQuestions(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return const Text("Press button to start");
+                case ConnectionState.waiting:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                case ConnectionState.active:
+                case ConnectionState.done:
+                  if (snapshot.hasError) return Container();
+                  return questionList();
+              }
+            }),
+      ),
     );
   }
 
@@ -128,15 +131,23 @@ class AnswerWidget extends StatefulWidget {
 }
 
 class _AnswerWidgetState extends State<AnswerWidget> {
+  Color c = Colors.black;
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        setState(() {
+          if (widget.a == widget.results[widget.index].correctAnswer) {
+            c = Colors.green;
+          } else {
+            c = Colors.red;
+          }
+        });
+      },
       title: Text(
         widget.a,
         textAlign: TextAlign.center,
-        style:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        style: TextStyle(color: c, fontWeight: FontWeight.bold),
       ),
     );
   }
