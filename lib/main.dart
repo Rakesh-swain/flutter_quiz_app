@@ -59,10 +59,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 case ConnectionState.active:
                 case ConnectionState.done:
-                  if (snapshot.hasError) return Container();
+                  if (snapshot.hasError) return errorData(snapshot);
                   return questionList();
               }
             }),
+      ),
+    );
+  }
+
+  Padding errorData(AsyncSnapshot snapshot) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Error: ${snapshot.error}"),
+          const SizedBox(
+            height: 20,
+          ),
+          RaisedButton(
+              child: const Text("Try Again"),
+              onPressed: () {
+                setState(() {
+                  fetchQuestions();
+                });
+              }),
+        ],
       ),
     );
   }
