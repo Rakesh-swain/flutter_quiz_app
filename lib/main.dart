@@ -109,8 +109,35 @@ class _MyHomePageState extends State<MyHomePage> {
                   child:
                       Text(results![index].type!.startsWith("m") ? "M" : "B"),
                 ),
-                children: [],
+                children: results![index].allAnswers!.map((a) {
+                  return AnswerWidget(results!, index, a);
+                }).toList(),
               ),
             ));
+  }
+}
+
+class AnswerWidget extends StatefulWidget {
+  final List<Results> results;
+  final int index;
+  final String a;
+
+  AnswerWidget(this.results, this.index, this.a);
+  @override
+  State<AnswerWidget> createState() => _AnswerWidgetState();
+}
+
+class _AnswerWidgetState extends State<AnswerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {},
+      title: Text(
+        widget.a,
+        textAlign: TextAlign.center,
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }
